@@ -1,17 +1,17 @@
 <?php
-//namespace mymvc;
+namespace Lib;
 
 class view {
 
 	function __construct() {
-    $GLOBALS['appLog']->log('+++ ENTER view->__construct', appLogger::INFO);
+		$GLOBALS['appLog']->log('+++   ' . __METHOD__, appLogger::INFO, __METHOD__);
 	}
 
 	public function render ($name, $noInclude = false) {
-		$GLOBALS['appLog']->log('+++ ENTER view->render', appLogger::INFO);
+		$GLOBALS['appLog']->log('+++   ' . __METHOD__, appLogger::INFO, __METHOD__);
 		
 		$view = 'views/' . $name . '.php';
-		$GLOBALS['appLog']->log('VIEW ' . $view, appLogger::INFO);
+		$GLOBALS['appLog']->log('VIEW ' . $view, appLogger::INFO, __METHOD__);
 		
 		if ($noInclude) 
 			require $view;

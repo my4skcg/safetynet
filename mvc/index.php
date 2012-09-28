@@ -1,28 +1,32 @@
 <?php
-//namespace mymvc;
-//use logger as l;
 
 define('SITEPATH', realpath(dirname(__FILE__)).'/');
-define('HOST', $_SERVER['HTTP_HOST']);
-
-$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-define('URI', $uri);
-
-//echo '<pre>'.print_r($_SERVER['REQUEST_URI'],1).'</pre>';
+require (SITEPATH . 'config/config.php');
 
 require_once (SITEPATH . 'lib/appLogger.php');
 //echo '<pre> Attempting to create appLogger </pre>';
 
-$appLog = new appLogger(SITEPATH . 'logs', appLogger::DEBUG);
+$GLOBALS['appLog'] = new \Lib\appLogger(SITEPATH . 'logs', \Lib\appLogger::DEBUG, basename(__FILE__));
 //echo '<pre> appLogger created </pre>';
 
-$GLOBALS['appLog']->log('Using $GLOBALS[logger]', appLogger::DEBUG);
-$GLOBALS['appLog']->log('SITEPATH = ' . SITEPATH, appLogger::DEBUG);
-$GLOBALS['appLog']->log('HOST = ' . HOST, appLogger::DEBUG);
-$GLOBALS['appLog']->log('URI = ' . URI, appLogger::DEBUG);
+//if(!defined('FW_VERSION')) die('the framework did not seem to load?');
+
+/*
+define('HOST', $_SERVER['HTTP_HOST']);
+
+$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+define('URI', $uri);
+ * 
+ */
+
+//echo '<pre>'.print_r($_SERVER['REQUEST_URI'],1).'</pre>';
+
+$GLOBALS['appLog']->log('Using $GLOBALS[appLog]', \Lib\appLogger::DEBUG, basename(__FILE__));
+$GLOBALS['appLog']->log('SITEPATH = ' . SITEPATH, \Lib\appLogger::DEBUG, basename(__FILE__));
+$GLOBALS['appLog']->log('HOST = ' . HOST, \Lib\appLogger::DEBUG, basename(__FILE__));
+$GLOBALS['appLog']->log('URI = ' . URI, \Lib\appLogger::DEBUG, basename(__FILE__));
 
 require (SITEPATH . 'lib/bootstrap.php');
-
-new Bootstrap();
+new \Lib\bootstrap();
 
 ?>

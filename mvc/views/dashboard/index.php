@@ -3,13 +3,13 @@
 	User is now logged in!</br>
 	Hello, 
 	
-	<?php if (!session::get('username'))
+	<?php if (!\Lib\session::get('username'))
 	{
 		echo "user";
 	}
 	else 
 	{
-		echo session::get('username');
+		echo \Lib\session::get('username');
 	} ?>
 	!</br>
 

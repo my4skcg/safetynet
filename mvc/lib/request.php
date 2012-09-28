@@ -1,5 +1,5 @@
 <?php
-//namespace mymvc;
+namespace Lib;
 
 	class request {
 
@@ -9,24 +9,24 @@
 
 		public function __construct() {
 			
-			$GLOBALS['appLog']->log('+++ ENTER Request->__construct()', appLogger::INFO);
+			$GLOBALS['appLog']->log('+++   ' . __METHOD__, appLogger::INFO, __METHOD__);
 			
 			$url = isset($_GET['url']) ? $_GET['url'] : null;
-			$GLOBALS['appLog']->log('$_GET[url] = ' . $url, appLogger::DEBUG);
+			$GLOBALS['appLog']->log('$_GET[url] = ' . $url, appLogger::DEBUG, __METHOD__);
 
 			$parts = explode('/', $url);
 			$parts = array_filter($parts);
-			$GLOBALS['appLog']->log('$parts = ' . print_r($parts,1), appLogger::DEBUG);
+			$GLOBALS['appLog']->log('$parts = ' . print_r($parts,1), appLogger::DEBUG, __METHOD__);
 
-			$this->_controller = ($c = array_shift($parts))? $c . 'Controller': 'indexController';
+			$this->_controller = ($c = array_shift($parts))? $c : 'index';
 			$this->_method = ($c = array_shift($parts))? $c: 'index';
 			$this->_args = (isset($parts[0])) ? $parts : array();
 
-			$GLOBALS['appLog']->log('_controller = ' . $this->_controller, appLogger::DEBUG);
-			$GLOBALS['appLog']->log('_method = ' . $this->_method, appLogger::DEBUG);
-			$GLOBALS['appLog']->log('_args = ' . print_r($this->_args,1), appLogger::DEBUG);
+			$GLOBALS['appLog']->log('_controller = ' . $this->_controller, appLogger::DEBUG, __METHOD__);
+			$GLOBALS['appLog']->log('_method = ' . $this->_method, appLogger::DEBUG, __METHOD__);
+			$GLOBALS['appLog']->log('_args = ' . print_r($this->_args,1), appLogger::DEBUG, __METHOD__);
 			
-			$GLOBALS['appLog']->log('+++ EXIT Request->__construct()', appLogger::INFO);
+			$GLOBALS['appLog']->log('---   ' . __METHOD__, appLogger::INFO, __METHOD__);
 
 		}
 

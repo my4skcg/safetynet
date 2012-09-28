@@ -1,7 +1,7 @@
 <?php
-//namespace logger;
+namespace Lib;
 
-require_once (SITEPATH . 'lib/KLogger.php');
+require_once (SITEPATH . 'lib/vendor/KLogger.php');
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -18,6 +18,7 @@ class appLogger extends \KLogger {
 	private  $_logDirectory;
 	private  $_severity;
 	
+	//public function __construct() {
 	public function __construct($logDirectory, $severity) {
 		
 		//echo '<pre>'.'In appLogger constructor'.'</pre>';
@@ -34,7 +35,7 @@ class appLogger extends \KLogger {
 		 */
 	}
 	
-	public function log ($line, $severity, $args = self::NO_ARGUMENTS) {
+	public function log ($line, $severity, $method = NULL, $args = self::NO_ARGUMENTS) {
 		/*
 		echo '<pre>'.'In appLogger logMsg'.'</pre>';
 		echo '<pre>'.'$logDirectory = '.print_r($this->_logDirectory,1).'</pre>';
@@ -42,8 +43,16 @@ class appLogger extends \KLogger {
 		echo '<pre>'.'$logger = '.print_r($this->_logger,1).'</pre>';
 		 * 
 		 */
+		
+		if (isset($method))
+		{
+			$newline = '[' . $method . ']    ' . $line;
+			$line = $newline;
+		}
+		
 		$this->_logger->log($line, $severity, $args);
 	}
+	
 }
 
 ?>

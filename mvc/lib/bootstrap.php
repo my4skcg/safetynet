@@ -1,7 +1,7 @@
 <?php
-//namespace mymvc;
+namespace Lib;
 
-class Bootstrap {
+class bootstrap {
 
 
   function __construct() {
@@ -21,55 +21,26 @@ class Bootstrap {
     //require (SITEPATH . 'lib/KLogger.php');
 		//require_once (SITEPATH . 'app/appLogger.php');
 		
-    function myAutoloader($class) {
-			 $GLOBALS['appLog']->log('ENTER bootstrap->myAutoloader(): $class= '. $class, appLogger::INFO);
-
-			 $file1 = SITEPATH.'controllers/'.$class.'.php';
-			 $file2 = SITEPATH.'lib/'.$class.'.php';
-			 $file3 = SITEPATH.'models/'.$class.'.php';
-
-			 if (file_exists($file1)) {
-						$GLOBALS['appLog']->log('include file1= '. $file1, appLogger::INFO);
-						include $file1;
-			 } elseif (file_exists($file2)) {
-						$GLOBALS['appLog']->log('include file2= '. $file2, appLogger::INFO);
-						include $file2;
-			 } elseif (file_exists($file3)) {
-						$GLOBALS['appLog']->log('include file3= '. $file3, appLogger::INFO);
-						include $file3;
-			 } else {
-						die('class '.$class.' not found');
-			 }
+		$GLOBALS['appLog']->log('##############  ' . __METHOD__, appLogger::INFO, __METHOD__);
+		
+		if (DEVELOPMENT_ENVIRONMENT == true) 
+		{
+			error_reporting(E_ALL);
+			ini_set('display_errors','On');
 		}
-		
-		$GLOBALS['appLog']->log('##############  ENTER Boostrap->__construct', appLogger::INFO);
 
-		set_include_path(get_include_path() . PATH_SEPARATOR . SITEPATH);
-		$GLOBALS['appLog']->log('get_include_path() = ' . get_include_path(), appLogger::DEBUG);
-		
+		// Setup the autoloader
+		$this->loader();
 
-
-		spl_autoload_extensions('.php, .inc');
-		
-//		spl_autoload_register('myAutoloader');
-
-//			spl_autoload_register();
-		spl_autoload_register(function($class) {
-			include $class . '.php';
-		});
-		
-		// ********* use an autoloader
-//    require_once (SITEPATH . 'lib/view.php');
-//    require_once (SITEPATH . 'lib/controller.php');
-//    require_once (SITEPATH . 'lib/model.php');
-//    require_once (SITEPATH . 'lib/database.php');
-//    require_once (SITEPATH . 'lib/session.php');
-//		require_once (SITEPATH . 'lib/request.php');
-//    require_once (SITEPATH . 'config/database.inc');
-//		require_once (SITEPATH . 'application/const.php');
-//		$GLOBALS['appLog']->log(print_r(get_included_files(),1), appLogger::DEBUG);
-
+		// Initialize the session
 		session::init();
+		
+		// Setup the database handling
+		require_once (SITEPATH . 'config/database.php');
+		require_once (SITEPATH . 'lib/dbHandler.php');
+		// @todo do not leave this as a global; implement the registry???
+		new dbHandler();
+
 		$this->route(new request());
 				
 
@@ -77,37 +48,38 @@ class Bootstrap {
 	
 	private function route(request $request)
 	{
-			$GLOBALS['appLog']->log('ENTER bootstrap->route()', appLogger::INFO);
-			$GLOBALS['appLog']->log('$request = ' . print_r($request,1), appLogger::DEBUG);
+			$GLOBALS['appLog']->log('+++   ' . __METHOD__, appLogger::INFO, __METHOD__);
+			$GLOBALS['appLog']->log('$request = ' . print_r($request,1), appLogger::DEBUG, __METHOD__);
 			
 			$cntrlr = $request->getController();
 			$method = $request->getMethod();
 			$args = $request->getArgs();
-			$GLOBALS['appLog']->log('controller = ' . $cntrlr, appLogger::DEBUG);
-			$GLOBALS['appLog']->log('method = ' . $method, appLogger::DEBUG);
-			$GLOBALS['appLog']->log('args = ' . print_r($args,1), appLogger::DEBUG);
+			$GLOBALS['appLog']->log('controller = ' . $cntrlr, appLogger::DEBUG, __METHOD__);
+			$GLOBALS['appLog']->log('method = ' . $method, appLogger::DEBUG, __METHOD__);
+			$GLOBALS['appLog']->log('args = ' . print_r($args,1), appLogger::DEBUG, __METHOD__);
 
 			$controllerFile = SITEPATH.'controllers/'.$cntrlr.'.php';
-			$GLOBALS['appLog']->log('controllerFile = ' . $controllerFile, appLogger::DEBUG);
+			$GLOBALS['appLog']->log('controllerFile = ' . $controllerFile, appLogger::DEBUG, __METHOD__);
 
 			if (is_readable($controllerFile))
 			{
-				$GLOBALS['appLog']->log('require the controller file', appLogger::INFO);
-				//require_once $controllerFile;
+				// @todo will I split controllers into framework controllers and app controllers?
+				$className = sprintf('\Controllers\%s', $cntrlr);
+				$GLOBALS['appLog']->log('className = ' . $className, appLogger::DEBUG, __METHOD__);
 
-				$GLOBALS['appLog']->log($controllerFile . ' is readable', appLogger::INFO);
-				$controller = new $cntrlr;
-				$GLOBALS['appLog']->log('$controller = ' . print_r($controller, 1), appLogger::INFO);
-				//$controller->loadModel($cntrlr);
+				$GLOBALS['appLog']->log($controllerFile . ' is readable', appLogger::INFO, __METHOD__);
+
+				$controller = new $className;
+				$GLOBALS['appLog']->log('$controller = ' . print_r($controller, 1), appLogger::INFO, __METHOD__);
 				
 				if (is_callable(array($controller,$method)))
-					$GLOBALS['appLog']->log('Callable', appLogger::DEBUG);
+					$GLOBALS['appLog']->log('Callable', appLogger::DEBUG, __METHOD__);
 				else
-					$GLOBALS['appLog']->log('Not Callable', appLogger::DEBUG);
+					$GLOBALS['appLog']->log('Not Callable', appLogger::DEBUG, __METHOD__);
 				 		
 
 				$method = (is_callable(array($controller,$method))) ? $method : 'index';
-				$GLOBALS['appLog']->log('method = ' . $method, appLogger::DEBUG);
+				$GLOBALS['appLog']->log('method = ' . $method, appLogger::DEBUG, __METHOD__);
 
 				if (!empty($args))
 				{
@@ -121,17 +93,59 @@ class Bootstrap {
 			else
 			{
 				// handle error somehow
-			}		
+			}
+		$GLOBALS['appLog']->log('---   ' . __METHOD__, appLogger::INFO, __METHOD__);
 	}
+	
+	function loader() {
+		
+		$GLOBALS['appLog']->log('+++   ' . __METHOD__, appLogger::INFO, __METHOD__);
+		
+		set_include_path(sprintf(
+			'%s%s%s',
+			get_include_path(),
+			PATH_SEPARATOR,
+			dirname(dirname(__FILE__))
+		));
+		
+		$GLOBALS['appLog']->log('get_include_path() = ' . get_include_path(), appLogger::INFO, __METHOD__);
+		//	spl_autoload_register();
+
+		spl_autoload_register(function($c){
+			try { spl_autoload($c); }
+			catch(Exception $e) { }
+		});
+
+		// framework version. do not touch.
+		// @todo check this in all files; die if not set.
+		define('FW_VERSION','1.0');
+
+		// set this to the name of your application's namespace.
+		// @todo use this in my code???
+		define('FW_APP_NS','App');
+		
+		$GLOBALS['appLog']->log('---   ' . __METHOD__, appLogger::INFO, __METHOD__);
+
+// ********* use an autoloader
+//    require_once (SITEPATH . 'lib/view.php');
+//    require_once (SITEPATH . 'lib/controller.php');
+//    require_once (SITEPATH . 'lib/model.php');
+//    require_once (SITEPATH . 'lib/database.php');
+//    require_once (SITEPATH . 'lib/session.php');
+//		require_once (SITEPATH . 'lib/request.php');
+//    require_once (SITEPATH . 'config/database.inc');
+//		$GLOBALS['appLog']->log(print_r(get_included_files(),1), appLogger::DEBUG);
+		}
 
 	function error($errorMsg) {
-		$GLOBALS['appLog']->log('ENTER bootstrap->error()', appLogger::INFO);
+		$GLOBALS['appLog']->log('+++   ' . __METHOD__, appLogger::INFO, __METHOD__);
 		
 		//require SITEPATH . 'controllers/errorController.php';
 		$controller = new Error($errorMsg);
 		$controller->index();
 
-		// do I really want to return false???
+		$GLOBALS['appLog']->log('---   ' . __METHOD__, appLogger::INFO, __METHOD__);
+		// @todo Do I really want to return false???
 		return false;
 	}
 	

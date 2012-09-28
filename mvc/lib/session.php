@@ -1,5 +1,5 @@
 <?php
-//namespace mymvc;
+namespace Lib;
 
 /**
  * Description of session
@@ -12,14 +12,14 @@ class session {
 	public static function init () {
 		if(!session_id()) 
 		{
-			$GLOBALS['appLog']->log('session_start()', appLogger::DEBUG);
+			$GLOBALS['appLog']->log('session_start()', appLogger::DEBUG, __METHOD__);
 			session_start();
 		}
 	}
 	
 	public static function set ($key, $value) {
 		
-    $GLOBALS['appLog']->log('Setting session[' . $key . '] to ' . $value, appLogger::DEBUG);
+		$GLOBALS['appLog']->log('Setting session[' . $key . '] to ' . $value, appLogger::DEBUG, __METHOD__);
 		
 		$_SESSION[$key] = $value;
 	}
@@ -33,7 +33,7 @@ class session {
 	}
 	
 	public static function delete ($key) {
-		session_unregister($key);
+		unset($_SESSION[$key]);
 	}
 	
 	public static function destroy () {

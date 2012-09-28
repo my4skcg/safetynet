@@ -1,3 +1,4 @@
+<?php namespace Views;?>
 </div>
 
 <div id="footer">

@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html>
 	<head>
 		<title>Test</title>
@@ -12,8 +13,8 @@
 
 			<a href="<?php echo URI; ?>/index">Index</a>
 			<a href="<?php echo URI; ?>/help">Help</a>
-			<?php if (session::get('username')): ?>
-				<a href="<?php echo URI; ?>/dashboard/logout">Logout</a>
+			<?php if (\Lib\session::get('username')): ?>
+				<a href="<?php echo URI; ?>/login/logoutAction">Logout</a>
 			<?php else: ?>
 				<a href="<?php echo URI; ?>/login">Login</a>
 			<?php endif; ?>
