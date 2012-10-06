@@ -23,7 +23,8 @@ class dashboard extends \Lib\controller {
 		$GLOBALS['appLog']->log('+++   ' . __METHOD__, \Lib\appLogger::INFO, __METHOD__);
 		$GLOBALS['appLog']->log('session key username = ' . \Lib\session::get('username'), \Lib\appLogger::DEBUG, __METHOD__);
 		
-		$this->view->render('dashboard/index');
+		//$this->view->render('dashboard/index');
+		$this->view->render(basename(__FILE__, ".php") . "/" . __FUNCTION__);
 		$GLOBALS['appLog']->log('---   ' . __METHOD__, \Lib\appLogger::INFO, __METHOD__);
 	}
 	

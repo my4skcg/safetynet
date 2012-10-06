@@ -38,7 +38,7 @@ class bootstrap {
 		// Setup the database handling
 		require_once (SITEPATH . 'config/database.php');
 		require_once (SITEPATH . 'lib/dbHandler.php');
-		// @todo do not leave this as a global; implement the registry???
+		// @todo currently implemented as a factory; do I want to put it in registry?
 		new dbHandler();
 
 		$this->route(new request());

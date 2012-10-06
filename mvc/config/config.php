@@ -10,4 +10,5 @@ define('DEVELOPMENT_ENVIRONMENT', true);
 
 // database table names
 define('USERS_TABLE', 'users');
+
 ?>

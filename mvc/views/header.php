@@ -9,7 +9,20 @@
 	<body>
 
 		<div id="header">
-			Header<br/>
+			<h1>
+				Hello, 
+
+				<?php if (!\Lib\session::get('username'))
+				{
+					echo "Guest";
+				}
+				else 
+				{
+					echo \Lib\session::get('username');
+				} ?>
+				<br/>
+				<br/>
+			</h1>
 
 			<a href="<?php echo URI; ?>/index">Index</a>
 			<a href="<?php echo URI; ?>/help">Help</a>
@@ -17,6 +30,7 @@
 				<a href="<?php echo URI; ?>/login/logoutAction">Logout</a>
 			<?php else: ?>
 				<a href="<?php echo URI; ?>/login">Login</a>
+				<a href="<?php echo URI; ?>/profile">Register</a>
 			<?php endif; ?>
 		</div>
 

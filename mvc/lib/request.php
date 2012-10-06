@@ -10,6 +10,7 @@ namespace Lib;
 		public function __construct() {
 			
 			$GLOBALS['appLog']->log('+++   ' . __METHOD__, appLogger::INFO, __METHOD__);
+			$GLOBALS['appLog']->log('_GET = ' . print_r($_GET,1), appLogger::DEBUG, __METHOD__);
 			
 			$url = isset($_GET['url']) ? $_GET['url'] : null;
 			$GLOBALS['appLog']->log('$_GET[url] = ' . $url, appLogger::DEBUG, __METHOD__);

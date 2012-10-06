@@ -61,10 +61,15 @@ class database extends \PDO {
 		$stmt = $this->prepare($sql);
 		foreach ($data as $key => $value) 
 		{
+			$GLOBALS['appLog']->log($key . '=>' . $value, appLogger::INFO, __METHOD__);
 			$stmt->bindValue(":$key", $value);
 		}
 		
 		$stmt->execute();
+		$data = $stmt->fetchAll();
+		$count = $stmt->rowCount();
+
+		return array('count'=>$count, 'data'=>$data);
 		
 	}
 	
@@ -79,22 +84,30 @@ class database extends \PDO {
 	 *		like select function
 	 */
 	
-	public function update ($table, $data, $where)
+	public function update ($table, $data, $whereClause, $whereData)
 	{
-		ksort($data);
-		
+		$GLOBALS['appLog']->log(print_r($data, 1), appLogger::INFO, __METHOD__);
+		$GLOBALS['appLog']->log(print_r($whereData, 1), appLogger::INFO, __METHOD__);
 		$fieldDetails = NULL;
+
 		foreach($data as $key=> $value) {
 			$fieldDetails .= "`$key`=:$key,";
 		}
 		$fieldDetails = rtrim($fieldDetails, ',');
 		
-		$stmt = $this->prepare("UPDATE $table SET $fieldDetails WHERE $where");
+		$sql = "UPDATE $table SET $fieldDetails WHERE $whereClause";
+		$GLOBALS['appLog']->log($sql, appLogger::INFO, __METHOD__);
+		$stmt = $this->prepare($sql);
 		
 		foreach ($data as $key => $value) {
 			$stmt->bindValue(":$key", $value);
 		}
 		
+		foreach ($whereData as $key => $value) {
+			$stmt->bindValue(":$key", $value);
+		}
+		
+		//$GLOBALS['appLog']->log(print_r($stmt, 1), appLogger::INFO, __METHOD__);
 		$stmt->execute();
 
 	}

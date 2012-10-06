@@ -10,6 +10,6 @@ if (\Lib\session::get('errorMsg'))
 
 <form action="login/loginAction" method="post">
 	<label>UserName</label><input type="text" name="username" /><br />
-	<label>Password</label><input type="text" name="password" /><br />
+	<label>Password</label><input type="password" name="password" /><br />
 	<label></label><input type="submit"/>
 </form>

@@ -19,7 +19,10 @@ class session {
 	
 	public static function set ($key, $value) {
 		
-		$GLOBALS['appLog']->log('Setting session[' . $key . '] to ' . $value, appLogger::DEBUG, __METHOD__);
+		if (is_array($value))
+			$GLOBALS['appLog']->log('Setting session[' . $key . '] to ' . print_r($value,1), appLogger::DEBUG, __METHOD__);
+		else
+			$GLOBALS['appLog']->log('Setting session[' . $key . '] to ' . $value, appLogger::DEBUG, __METHOD__);
 		
 		$_SESSION[$key] = $value;
 	}

@@ -1,6 +1,10 @@
 <?php
 namespace Models;
 
+/*
+ * 		@todo CURRENTLY THIS CLASS IS NOT USED; DELETE
+ */
+
 class login extends \Lib\model {
 
 	function __construct() {
